@@ -1,36 +1,31 @@
-"use client";
-
-import { createContext, useContext, ReactNode } from "react";
+"use client"
+import { createContext, useContext, ReactNode } from "react"
 import {
   LiveblocksProvider,
   RoomProvider,
   ClientSideSuspense,
-} from "@liveblocks/react/suspense";
-import { Spinner } from "@/components/ui/spinner";
-
-const LiveblocksStatusContext = createContext<boolean>(false);
-
+} from "@liveblocks/react/suspense"
+import { Spinner } from "@/components/ui/spinner"
+const LiveblocksStatusContext = createContext<boolean>(false)
 export function useIsLiveblocksEnabled() {
-  return useContext(LiveblocksStatusContext);
+  return useContext(LiveblocksStatusContext)
 }
-
 export function Room({
   roomId,
   hasLiveblocks = false,
   children,
 }: {
-  roomId: string;
-  hasLiveblocks?: boolean;
-  children: ReactNode;
+  roomId: string
+  hasLiveblocks?: boolean
+  children: ReactNode
 }) {
   if (!hasLiveblocks) {
     return (
       <LiveblocksStatusContext.Provider value={false}>
         {children}
       </LiveblocksStatusContext.Provider>
-    );
+    )
   }
-
   return (
     <LiveblocksStatusContext.Provider value={true}>
       <LiveblocksProvider
@@ -42,15 +37,13 @@ export function Room({
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ userIds }),
-            });
-
+            })
             if (!response.ok) {
-              return undefined;
+              return undefined
             }
-
-            return await response.json();
+            return await response.json()
           } catch {
-            return undefined;
+            return undefined
           }
         }}
       >
@@ -67,5 +60,5 @@ export function Room({
         </RoomProvider>
       </LiveblocksProvider>
     </LiveblocksStatusContext.Provider>
-  );
+  )
 }

@@ -1,27 +1,20 @@
 import * as Sentry from "@sentry/nextjs"
 import { auth, currentUser } from "@clerk/nextjs/server"
-
 import { liveblocks } from "@/lib/liveblocks"
-
 export async function POST() {
   const { userId, orgId } = await auth()
-
   if (!userId || !orgId) {
     return new Response("Unauthorized", { status: 401 })
   }
-
   const user = await currentUser()
-
   if (!user) {
     return new Response("Unauthorized", { status: 401 })
   }
-
   Sentry.getIsolationScope().setAttributes({
     route: "POST /api/liveblocks/auth",
     userId,
     orgId,
   })
-
   if (!process.env.LIVEBLOCKS_SECRET_KEY) {
     return new Response(
       JSON.stringify({ error: "LIVEBLOCKS_SECRET_KEY is not set" }),
@@ -31,10 +24,7 @@ export async function POST() {
       }
     )
   }
-
   try {
-    // Identify the user with an ID token. Permissions are resolved per-room
-    // from the user's groups — scope access to their Clerk organization.
     const { status, body } = await liveblocks.identifyUser(
       {
         userId,
@@ -52,7 +42,6 @@ export async function POST() {
         },
       }
     )
-
     if (status >= 400) {
       Sentry.logger.error("Liveblocks user identification failed", {
         userId,
@@ -60,9 +49,12 @@ export async function POST() {
         status,
       })
     } else {
-      Sentry.logger.info("Liveblocks user identified", { userId, orgId, status })
+      Sentry.logger.info("Liveblocks user identified", {
+        userId,
+        orgId,
+        status,
+      })
     }
-
     return new Response(body, { status })
   } catch (error) {
     Sentry.logger.error("Liveblocks auth failed", { error, userId, orgId })

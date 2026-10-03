@@ -1,8 +1,6 @@
 "use client"
-
 import { useState } from "react"
 import { MoreHorizontal, Play, Trash2 } from "lucide-react"
-
 import {
   Accordion,
   AccordionContent,
@@ -21,7 +19,6 @@ import { Label } from "@/components/ui/label"
 import { ResizablePanel } from "@/components/ui/resizable"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-
 import {
   nodeRegistry,
   type NodeDefinition,
@@ -30,17 +27,6 @@ import {
   type StepNodeKind,
   type StepNodeType,
 } from "@/features/workflows/nodes/node-registry"
-
-// This file builds up to the RightSidebar component exported at the bottom: a
-// header with workflow actions (delete, run), then two tabs — a Toolbar for
-// adding nodes and an Editor for tweaking the selected node. Each helper below is
-// defined just above the block that uses it.
-
-// ---------------------------------------------------------------------------
-// Shared pieces — used by both the Toolbar and the Editor.
-// ---------------------------------------------------------------------------
-
-// The accent-colored icon chip, mirroring the node on the canvas.
 function NodeIcon({ type, className }: { type: NodeType; className?: string }) {
   const def = nodeRegistry[type]
   const Icon = def.icon
@@ -56,8 +42,6 @@ function NodeIcon({ type, className }: { type: NodeType; className?: string }) {
     </span>
   )
 }
-
-// A titled, scrollable panel. Each tab renders its content inside one.
 function Section({
   title,
   icon,
@@ -77,12 +61,6 @@ function Section({
     </div>
   )
 }
-
-// ---------------------------------------------------------------------------
-// Editor tab — edits the fields of the selected node.
-// ---------------------------------------------------------------------------
-
-// A single editor field for a node property.
 function FieldInput({
   field,
   value,
@@ -92,7 +70,6 @@ function FieldInput({
   value: string
   onChange: (value: string) => void
 }) {
-  // TODO: support a multiline field variant (textarea).
   return (
     <Input
       id={field.key}
@@ -102,8 +79,6 @@ function FieldInput({
     />
   )
 }
-
-// The Editor tab: one input per field on the selected node, or an empty state.
 function Inspector({ node }: { node: StepNodeType | undefined }) {
   if (!node) {
     return (
@@ -112,10 +87,8 @@ function Inspector({ node }: { node: StepNodeType | undefined }) {
       </Section>
     )
   }
-
   const { type, title, values } = node.data
   const def: NodeDefinition = nodeRegistry[type]
-
   return (
     <Section title={title} icon={<NodeIcon type={type} />}>
       <div className="flex flex-col gap-3 p-3">
@@ -131,7 +104,6 @@ function Inspector({ node }: { node: StepNodeType | undefined }) {
                 field={field}
                 value={values[field.key] ?? ""}
                 onChange={(value) => {
-                  // TODO: save the edit back onto the selected node.
                   void value
                 }}
               />
@@ -142,27 +114,18 @@ function Inspector({ node }: { node: StepNodeType | undefined }) {
     </Section>
   )
 }
-
-// ---------------------------------------------------------------------------
-// Toolbar tab — adds nodes to the canvas, grouped by kind.
-// ---------------------------------------------------------------------------
-
-// The Toolbar's groups, one accordion section per node kind.
-const sections: { kind: StepNodeKind; label: string }[] = [
+const sections: {
+  kind: StepNodeKind
+  label: string
+}[] = [
   { kind: "trigger", label: "Triggers" },
   { kind: "action", label: "Actions" },
 ]
-
-// Every node type from the registry, filtered into the groups below.
 const definitions = Object.values(nodeRegistry)
-
-// The Toolbar tab: a button per node type that adds it to the canvas.
 function Palette() {
   const add = (type: NodeType) => {
-    // TODO: add the clicked node to the canvas (one trigger max).
     void type
   }
-
   return (
     <Section title="Toolbar">
       <Accordion
@@ -200,12 +163,6 @@ function Palette() {
     </Section>
   )
 }
-
-// ---------------------------------------------------------------------------
-// Header — workflow-level actions shown above the tabs.
-// ---------------------------------------------------------------------------
-
-// The "..." menu for workflow-level actions.
 function ActionsMenu() {
   return (
     <DropdownMenu>
@@ -218,9 +175,7 @@ function ActionsMenu() {
         <DropdownMenuItem
           variant="destructive"
           className="text-xs [&_svg:not([class*='size-'])]:size-3.5"
-          onSelect={() => {
-            // TODO: delete the workflow, then navigate away.
-          }}
+          onSelect={() => {}}
         >
           <Trash2 />
           Delete workflow
@@ -229,35 +184,17 @@ function ActionsMenu() {
     </DropdownMenu>
   )
 }
-
-// Kicks off a run of the current workflow.
 function RunButton() {
   return (
-    <Button
-      size="sm"
-      variant="secondary"
-      onClick={() => {
-        // TODO: validate the graph and run the workflow (toggle to Stop while running).
-      }}
-    >
+    <Button size="sm" variant="secondary" onClick={() => {}}>
       <Play fill="primary" />
       Run
     </Button>
   )
 }
-
-// ---------------------------------------------------------------------------
-// The sidebar itself — header on top, then the Toolbar / Editor tabs.
-// ---------------------------------------------------------------------------
-
 export function RightSidebar() {
   const [tab, setTab] = useState("toolbar")
-
-  // TODO: read the currently selected node from React Flow.
   const selected: StepNodeType | undefined = undefined
-
-  // TODO: auto-switch to the Editor tab when the selection changes.
-
   return (
     <ResizablePanel
       className="bg-background"

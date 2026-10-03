@@ -1,5 +1,4 @@
 import type { Stagehand } from "@browserbasehq/stagehand"
-
 export async function agent({
   stagehand,
   instruction,
@@ -8,7 +7,6 @@ export async function agent({
   instruction: string
 }) {
   const result = await stagehand.agent().execute(instruction)
-
   return {
     success: result.success,
     message: result.message,

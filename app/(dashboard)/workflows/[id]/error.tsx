@@ -1,7 +1,5 @@
 "use client"
-
 import { RotateCwIcon, TriangleAlertIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   Empty,
@@ -11,12 +9,13 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-
 export default function Error({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
+  error: Error & {
+    digest?: string
+  }
   reset: () => void
 }) {
   return (

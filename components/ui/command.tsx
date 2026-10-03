@@ -1,8 +1,6 @@
 "use client"
-
 import * as React from "react"
 import { Command as CommandPrimitive } from "cmdk"
-
 import { cn } from "@/lib/utils"
 import {
   Dialog,
@@ -11,12 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  InputGroup,
-  InputGroupAddon,
-} from "@/components/ui/input-group"
+import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { SearchIcon, CheckIcon } from "lucide-react"
-
 function Command({
   className,
   ...props
@@ -32,7 +26,6 @@ function Command({
     />
   )
 }
-
 function CommandDialog({
   title = "Command Palette",
   description = "Search for a command to run...",
@@ -64,7 +57,6 @@ function CommandDialog({
     </Dialog>
   )
 }
-
 function CommandInput({
   className,
   ...props
@@ -87,7 +79,6 @@ function CommandInput({
     </div>
   )
 }
-
 function CommandList({
   className,
   ...props
@@ -103,7 +94,6 @@ function CommandList({
     />
   )
 }
-
 function CommandEmpty({
   className,
   ...props
@@ -116,7 +106,6 @@ function CommandEmpty({
     />
   )
 }
-
 function CommandGroup({
   className,
   ...props
@@ -132,7 +121,6 @@ function CommandGroup({
     />
   )
 }
-
 function CommandSeparator({
   className,
   ...props
@@ -145,7 +133,6 @@ function CommandSeparator({
     />
   )
 }
-
 function CommandItem({
   className,
   children,
@@ -165,7 +152,6 @@ function CommandItem({
     </CommandPrimitive.Item>
   )
 }
-
 function CommandShortcut({
   className,
   ...props
@@ -181,7 +167,6 @@ function CommandShortcut({
     />
   )
 }
-
 export {
   Command,
   CommandDialog,

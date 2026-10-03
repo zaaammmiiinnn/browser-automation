@@ -1,9 +1,7 @@
 import * as React from "react"
 import { Slot } from "radix-ui"
-
 import { cn } from "@/lib/utils"
 import { ChevronRightIcon, MoreHorizontalIcon } from "lucide-react"
-
 function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
   return (
     <nav
@@ -14,7 +12,6 @@ function Breadcrumb({ className, ...props }: React.ComponentProps<"nav">) {
     />
   )
 }
-
 function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
   return (
     <ol
@@ -27,7 +24,6 @@ function BreadcrumbList({ className, ...props }: React.ComponentProps<"ol">) {
     />
   )
 }
-
 function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
     <li
@@ -37,7 +33,6 @@ function BreadcrumbItem({ className, ...props }: React.ComponentProps<"li">) {
     />
   )
 }
-
 function BreadcrumbLink({
   asChild,
   className,
@@ -46,7 +41,6 @@ function BreadcrumbLink({
   asChild?: boolean
 }) {
   const Comp = asChild ? Slot.Root : "a"
-
   return (
     <Comp
       data-slot="breadcrumb-link"
@@ -55,7 +49,6 @@ function BreadcrumbLink({
     />
   )
 }
-
 function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
@@ -68,7 +61,6 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<"span">) {
     />
   )
 }
-
 function BreadcrumbSeparator({
   children,
   className,
@@ -82,13 +74,10 @@ function BreadcrumbSeparator({
       className={cn("[&>svg]:size-3.5", className)}
       {...props}
     >
-      {children ?? (
-        <ChevronRightIcon />
-      )}
+      {children ?? <ChevronRightIcon />}
     </li>
   )
 }
-
 function BreadcrumbEllipsis({
   className,
   ...props
@@ -104,13 +93,11 @@ function BreadcrumbEllipsis({
       )}
       {...props}
     >
-      <MoreHorizontalIcon
-      />
+      <MoreHorizontalIcon />
       <span className="sr-only">More</span>
     </span>
   )
 }
-
 export {
   Breadcrumb,
   BreadcrumbList,

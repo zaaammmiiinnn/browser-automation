@@ -1,34 +1,37 @@
 "use client"
-
 import React, { Component, ReactNode } from "react"
 import { PricingTable } from "@clerk/nextjs"
 import { Check, ExternalLink, ShieldAlert, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-
 interface Props {
   children?: ReactNode
 }
-
 interface State {
   hasError: boolean
 }
-
 class PricingTableBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = { hasError: false }
   }
-
   static getDerivedStateFromError(): State {
     return { hasError: true }
   }
-
   componentDidCatch(error: Error) {
-    console.warn("PricingTable could not render (billing not enabled):", error.message)
+    console.warn(
+      "PricingTable could not render (billing not enabled):",
+      error.message
+    )
   }
-
   render() {
     if (this.state.hasError) {
       return <BillingSetupNotice />
@@ -36,19 +39,19 @@ class PricingTableBoundary extends Component<Props, State> {
     return this.props.children
   }
 }
-
 function BillingSetupNotice() {
   return (
     <div className="flex flex-col gap-6">
-      <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 rounded-xl border border-amber-500/20 bg-amber-500/10 p-5 sm:flex-row sm:items-center">
         <div className="flex items-start gap-3">
-          <ShieldAlert className="size-5 text-amber-500 shrink-0 mt-0.5" />
+          <ShieldAlert className="mt-0.5 size-5 shrink-0 text-amber-500" />
           <div className="flex flex-col gap-0.5">
-            <h3 className="font-medium text-foreground text-sm">
+            <h3 className="text-sm font-medium text-foreground">
               Clerk Billing is not yet enabled
             </h3>
             <p className="text-xs text-muted-foreground">
-              Turn on Organization Billing in your Clerk Dashboard to activate the live checkout drawer.
+              Turn on Organization Billing in your Clerk Dashboard to activate
+              the live checkout drawer.
             </p>
           </div>
         </div>
@@ -65,32 +68,41 @@ function BillingSetupNotice() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card className="flex flex-col justify-between">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="text-xl">Free</CardTitle>
               <Badge variant="secondary">Current Plan</Badge>
             </div>
-            <CardDescription>Essential automation building blocks</CardDescription>
-            <div className="pt-2 text-3xl font-bold">$0 <span className="text-sm font-normal text-muted-foreground">/ month</span></div>
+            <CardDescription>
+              Essential automation building blocks
+            </CardDescription>
+            <div className="pt-2 text-3xl font-bold">
+              $0{" "}
+              <span className="text-sm font-normal text-muted-foreground">
+                / month
+              </span>
+            </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
-            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Included features:</div>
+            <div className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+              Included features:
+            </div>
             <div className="flex items-center gap-2 text-sm">
-              <Check className="size-4 text-emerald-500 shrink-0" />
+              <Check className="size-4 shrink-0 text-emerald-500" />
               <span>Standard workflow runner</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Check className="size-4 text-emerald-500 shrink-0" />
+              <Check className="size-4 shrink-0 text-emerald-500" />
               <span>Core nodes: Start, Open URL, Act, Extract</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Check className="size-4 text-emerald-500 shrink-0" />
+              <Check className="size-4 shrink-0 text-emerald-500" />
               <span>Observe candidate actions</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Check className="size-4 text-emerald-500 shrink-0" />
+              <Check className="size-4 shrink-0 text-emerald-500" />
               <span>Resend transactional email node</span>
             </div>
           </CardContent>
@@ -101,8 +113,8 @@ function BillingSetupNotice() {
           </CardFooter>
         </Card>
 
-        <Card className="flex flex-col justify-between border-primary/50 relative overflow-hidden">
-          <div className="absolute top-0 right-0 px-3 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-bl-lg flex items-center gap-1">
+        <Card className="relative flex flex-col justify-between overflow-hidden border-primary/50">
+          <div className="absolute top-0 right-0 flex items-center gap-1 rounded-bl-lg bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
             <Sparkles className="size-3" />
             Recommended
           </div>
@@ -110,25 +122,34 @@ function BillingSetupNotice() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-xl">Pro</CardTitle>
             </div>
-            <CardDescription>Advanced autonomous AI &amp; session recordings</CardDescription>
-            <div className="pt-2 text-3xl font-bold">$20 <span className="text-sm font-normal text-muted-foreground">/ month</span></div>
+            <CardDescription>
+              Advanced autonomous AI &amp; session recordings
+            </CardDescription>
+            <div className="pt-2 text-3xl font-bold">
+              $20{" "}
+              <span className="text-sm font-normal text-muted-foreground">
+                / month
+              </span>
+            </div>
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
-            <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Everything in Free, plus:</div>
+            <div className="text-xs font-medium tracking-wider text-muted-foreground uppercase">
+              Everything in Free, plus:
+            </div>
             <div className="flex items-center gap-2 text-sm font-medium">
-              <Check className="size-4 text-primary shrink-0" />
+              <Check className="size-4 shrink-0 text-primary" />
               <span>Autonomous AI Agent node (Computer Use)</span>
             </div>
             <div className="flex items-center gap-2 text-sm font-medium">
-              <Check className="size-4 text-primary shrink-0" />
+              <Check className="size-4 shrink-0 text-primary" />
               <span>Browserbase Session Replays (video player)</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Check className="size-4 text-emerald-500 shrink-0" />
+              <Check className="size-4 shrink-0 text-emerald-500" />
               <span>Real-time collaborative canvas</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <Check className="size-4 text-emerald-500 shrink-0" />
+              <Check className="size-4 shrink-0 text-emerald-500" />
               <span>Priority execution queue</span>
             </div>
           </CardContent>
@@ -150,14 +171,13 @@ function BillingSetupNotice() {
     </div>
   )
 }
-
 export default function BillingPage() {
   return (
     <div className="h-svh overflow-y-auto">
       <div className="mx-auto flex max-w-4xl flex-col gap-6 p-8">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-semibold tracking-tight">Billing</h1>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             Choose a plan for your organization. Upgrades and checkout happen
             right here.
           </p>

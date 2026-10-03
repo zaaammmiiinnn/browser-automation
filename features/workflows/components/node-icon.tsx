@@ -1,10 +1,9 @@
 import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
-
-import { nodeRegistry, type NodeType } from "@/features/workflows/nodes/node-registry"
-
-// The accent-colored icon chip, mirroring the node on the canvas. Pass `running`
-// to swap the node's icon for a spinner inside the same colored chip.
+import {
+  nodeRegistry,
+  type NodeType,
+} from "@/features/workflows/nodes/node-registry"
 export function NodeIcon({
   type,
   running,
@@ -24,7 +23,11 @@ export function NodeIcon({
         className
       )}
     >
-      {running ? <Spinner className="size-3.5" /> : <Icon className="size-3.5" />}
+      {running ? (
+        <Spinner className="size-3.5" />
+      ) : (
+        <Icon className="size-3.5" />
+      )}
     </span>
   )
 }

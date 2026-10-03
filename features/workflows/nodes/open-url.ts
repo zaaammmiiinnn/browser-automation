@@ -1,5 +1,4 @@
 import type { Stagehand } from "@browserbasehq/stagehand"
-
 export async function openUrl({
   stagehand,
   url,
@@ -8,7 +7,6 @@ export async function openUrl({
   url: string
 }) {
   const page = stagehand.context.pages()[0]
-  await page.goto(url, { waitUntil: "load", timeoutMs: 30_000 })
-
+  await page.goto(url, { waitUntil: "load", timeoutMs: 30000 })
   return { url: page.url(), title: await page.title() }
 }

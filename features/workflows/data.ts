@@ -2,14 +2,11 @@ import fs from "fs"
 import path from "path"
 import crypto from "crypto"
 import { and, desc, eq } from "drizzle-orm"
-
 import { db } from "@/lib/db"
 import { Workflow, WorkflowGraph, workflows } from "@/lib/db/schema"
 import { validateGraph } from "@/features/workflows/lib/validate-graph"
-
 const DATA_DIR = path.join(process.cwd(), ".data")
 const DATA_FILE = path.join(DATA_DIR, "workflows.json")
-
 function getLocalWorkflows(): Workflow[] {
   try {
     if (!fs.existsSync(DATA_DIR)) {
@@ -34,7 +31,6 @@ function getLocalWorkflows(): Workflow[] {
     return []
   }
 }
-
 function saveLocalWorkflows(list: Workflow[]) {
   try {
     if (!fs.existsSync(DATA_DIR)) {
@@ -45,7 +41,6 @@ function saveLocalWorkflows(list: Workflow[]) {
     console.error("Failed to save local workflows fallback:", e)
   }
 }
-
 export async function saveWorkflowGraph({
   orgId,
   id,
@@ -57,7 +52,6 @@ export async function saveWorkflowGraph({
 }) {
   const problems = validateGraph(graph)
   if (problems.length > 0) throw new Error(problems.join(" "))
-
   if (process.env.DATABASE_URL) {
     await db
       .update(workflows)
@@ -65,7 +59,6 @@ export async function saveWorkflowGraph({
       .where(and(eq(workflows.id, id), eq(workflows.orgId, orgId)))
     return
   }
-
   const items = getLocalWorkflows()
   const target = items.find((w) => w.id === id && w.orgId === orgId)
   if (target) {
@@ -74,7 +67,6 @@ export async function saveWorkflowGraph({
     saveLocalWorkflows(items)
   }
 }
-
 export async function listWorkflows(orgId: string): Promise<Workflow[]> {
   if (process.env.DATABASE_URL) {
     return db
@@ -83,35 +75,34 @@ export async function listWorkflows(orgId: string): Promise<Workflow[]> {
       .where(eq(workflows.orgId, orgId))
       .orderBy(desc(workflows.createdAt))
   }
-
   return getLocalWorkflows()
     .filter((w) => w.orgId === orgId)
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 }
-
-export async function getWorkflow(orgId: string, id: string): Promise<Workflow | undefined> {
+export async function getWorkflow(
+  orgId: string,
+  id: string
+): Promise<Workflow | undefined> {
   if (process.env.DATABASE_URL) {
     const [workflow] = await db
       .select()
       .from(workflows)
       .where(and(eq(workflows.id, id), eq(workflows.orgId, orgId)))
-
     return workflow
   }
-
   return getLocalWorkflows().find((w) => w.id === id && w.orgId === orgId)
 }
-
-export async function createWorkflow(orgId: string, name: string): Promise<Workflow> {
+export async function createWorkflow(
+  orgId: string,
+  name: string
+): Promise<Workflow> {
   if (process.env.DATABASE_URL) {
     const [workflow] = await db
       .insert(workflows)
       .values({ orgId, name })
       .returning()
-
     return workflow
   }
-
   const newWorkflow: Workflow = {
     id: crypto.randomUUID(),
     orgId,
@@ -120,24 +111,22 @@ export async function createWorkflow(orgId: string, name: string): Promise<Workf
     createdAt: new Date(),
     updatedAt: new Date(),
   }
-
   const items = getLocalWorkflows()
   items.unshift(newWorkflow)
   saveLocalWorkflows(items)
-
   return newWorkflow
 }
-
-export async function deleteWorkflow(orgId: string, id: string): Promise<Workflow | undefined> {
+export async function deleteWorkflow(
+  orgId: string,
+  id: string
+): Promise<Workflow | undefined> {
   if (process.env.DATABASE_URL) {
     const [workflow] = await db
       .delete(workflows)
       .where(and(eq(workflows.id, id), eq(workflows.orgId, orgId)))
       .returning()
-
     return workflow
   }
-
   const items = getLocalWorkflows()
   const idx = items.findIndex((w) => w.id === id && w.orgId === orgId)
   if (idx !== -1) {
@@ -145,6 +134,5 @@ export async function deleteWorkflow(orgId: string, id: string): Promise<Workflo
     saveLocalWorkflows(items)
     return deleted
   }
-
   return undefined
 }

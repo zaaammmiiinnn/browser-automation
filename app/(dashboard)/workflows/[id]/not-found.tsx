@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { SearchXIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   Empty,
@@ -10,7 +9,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-
 export default function NotFound() {
   return (
     <Empty className="min-h-svh border-none">

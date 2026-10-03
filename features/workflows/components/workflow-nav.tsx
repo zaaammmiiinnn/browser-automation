@@ -1,10 +1,8 @@
 "use client"
-
 import { useTransition } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { PlusIcon, WorkflowIcon } from "lucide-react"
-
 import { generateSlug } from "@/features/workflows/lib/generate-slug"
 import {
   Popover,
@@ -23,23 +21,19 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import type { Workflow } from "@/lib/db/schema"
-
 interface WorkflowNavProps {
   workflows: Workflow[]
   onCreateWorkflow: (name: string) => Promise<void>
 }
-
 export function WorkflowNav({ workflows, onCreateWorkflow }: WorkflowNavProps) {
   const { state } = useSidebar()
   const pathname = usePathname()
   const [isPending, startTransition] = useTransition()
-
   const handleCreateWorkflow = () => {
     startTransition(async () => {
       await onCreateWorkflow(generateSlug())
     })
   }
-
   const workflowItems = workflows.map((workflow) => (
     <SidebarMenuItem key={workflow.id}>
       <SidebarMenuButton
@@ -52,7 +46,6 @@ export function WorkflowNav({ workflows, onCreateWorkflow }: WorkflowNavProps) {
       </SidebarMenuButton>
     </SidebarMenuItem>
   ))
-
   if (state === "collapsed") {
     return (
       <SidebarGroup>
@@ -79,7 +72,9 @@ export function WorkflowNav({ workflows, onCreateWorkflow }: WorkflowNavProps) {
                     </SidebarMenuItem>
                   </SidebarMenu>
                   <SidebarSeparator className="mx-0" />
-                  <SidebarMenu className="gap-y-0.5">{workflowItems}</SidebarMenu>
+                  <SidebarMenu className="gap-y-0.5">
+                    {workflowItems}
+                  </SidebarMenu>
                 </PopoverContent>
               </Popover>
             </SidebarMenuItem>
@@ -88,7 +83,6 @@ export function WorkflowNav({ workflows, onCreateWorkflow }: WorkflowNavProps) {
       </SidebarGroup>
     )
   }
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Workflows</SidebarGroupLabel>

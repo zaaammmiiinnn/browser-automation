@@ -1,10 +1,8 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "radix-ui"
-
 import { cn } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
-
 function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -18,7 +16,6 @@ function ItemGroup({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
-
 function ItemSeparator({
   className,
   ...props
@@ -32,7 +29,6 @@ function ItemSeparator({
     />
   )
 }
-
 const itemVariants = cva(
   "group/item flex w-full flex-wrap items-center rounded-lg border text-sm transition-colors duration-100 outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 [a]:transition-colors [a]:hover:bg-muted",
   {
@@ -54,7 +50,6 @@ const itemVariants = cva(
     },
   }
 )
-
 function Item({
   className,
   variant = "default",
@@ -62,7 +57,9 @@ function Item({
   asChild = false,
   ...props
 }: React.ComponentProps<"div"> &
-  VariantProps<typeof itemVariants> & { asChild?: boolean }) {
+  VariantProps<typeof itemVariants> & {
+    asChild?: boolean
+  }) {
   const Comp = asChild ? Slot.Root : "div"
   return (
     <Comp
@@ -74,7 +71,6 @@ function Item({
     />
   )
 }
-
 const itemMediaVariants = cva(
   "flex shrink-0 items-center justify-center gap-2 group-has-data-[slot=item-description]/item:translate-y-0.5 group-has-data-[slot=item-description]/item:self-start [&_svg]:pointer-events-none",
   {
@@ -91,7 +87,6 @@ const itemMediaVariants = cva(
     },
   }
 )
-
 function ItemMedia({
   className,
   variant = "default",
@@ -106,7 +101,6 @@ function ItemMedia({
     />
   )
 }
-
 function ItemContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -119,7 +113,6 @@ function ItemContent({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
-
 function ItemTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -132,7 +125,6 @@ function ItemTitle({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
-
 function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
@@ -145,7 +137,6 @@ function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
     />
   )
 }
-
 function ItemActions({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -155,7 +146,6 @@ function ItemActions({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
-
 function ItemHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -168,7 +158,6 @@ function ItemHeader({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
-
 function ItemFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -181,7 +170,6 @@ function ItemFooter({ className, ...props }: React.ComponentProps<"div">) {
     />
   )
 }
-
 export {
   Item,
   ItemMedia,

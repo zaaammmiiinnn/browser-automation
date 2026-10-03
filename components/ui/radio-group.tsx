@@ -1,10 +1,7 @@
 "use client"
-
 import * as React from "react"
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
-
 import { cn } from "@/lib/utils"
-
 function RadioGroup({
   className,
   ...props
@@ -17,7 +14,6 @@ function RadioGroup({
     />
   )
 }
-
 function RadioGroupItem({
   className,
   ...props
@@ -40,5 +36,4 @@ function RadioGroupItem({
     </RadioGroupPrimitive.Item>
   )
 }
-
 export { RadioGroup, RadioGroupItem }

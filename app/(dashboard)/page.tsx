@@ -1,5 +1,4 @@
 import { WorkflowIcon } from "lucide-react"
-
 import {
   Empty,
   EmptyContent,
@@ -9,7 +8,6 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty"
 import { NewWorkflowButton } from "@/features/workflows/components/new-workflow-button"
-
 export default function Page() {
   return (
     <Empty className="min-h-svh border-none">

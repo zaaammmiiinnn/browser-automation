@@ -1,5 +1,4 @@
 import type { Stagehand } from "@browserbasehq/stagehand"
-
 export async function act({
   stagehand,
   instruction,
@@ -9,6 +8,5 @@ export async function act({
 }) {
   const result = await stagehand.act(instruction)
   const page = stagehand.context.pages()[0]
-
   return { success: result.success, message: result.message, url: page.url() }
 }

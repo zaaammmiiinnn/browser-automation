@@ -1,17 +1,13 @@
 "use client"
-
 import * as React from "react"
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui"
-
 import { cn } from "@/lib/utils"
 import { ChevronRightIcon, CheckIcon } from "lucide-react"
-
 function ContextMenu({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
   return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />
 }
-
 function ContextMenuTrigger({
   className,
   ...props
@@ -24,7 +20,6 @@ function ContextMenuTrigger({
     />
   )
 }
-
 function ContextMenuGroup({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Group>) {
@@ -32,7 +27,6 @@ function ContextMenuGroup({
     <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />
   )
 }
-
 function ContextMenuPortal({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Portal>) {
@@ -40,13 +34,11 @@ function ContextMenuPortal({
     <ContextMenuPrimitive.Portal data-slot="context-menu-portal" {...props} />
   )
 }
-
 function ContextMenuSub({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Sub>) {
   return <ContextMenuPrimitive.Sub data-slot="context-menu-sub" {...props} />
 }
-
 function ContextMenuRadioGroup({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup>) {
@@ -57,7 +49,6 @@ function ContextMenuRadioGroup({
     />
   )
 }
-
 function ContextMenuContent({
   className,
   ...props
@@ -68,13 +59,15 @@ function ContextMenuContent({
     <ContextMenuPrimitive.Portal>
       <ContextMenuPrimitive.Content
         data-slot="context-menu-content"
-        className={cn("z-50 max-h-(--radix-context-menu-content-available-height) min-w-36 origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className )}
+        className={cn(
+          "z-50 max-h-(--radix-context-menu-content-available-height) min-w-36 origin-(--radix-context-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+          className
+        )}
         {...props}
       />
     </ContextMenuPrimitive.Portal>
   )
 }
-
 function ContextMenuItem({
   className,
   inset,
@@ -97,7 +90,6 @@ function ContextMenuItem({
     />
   )
 }
-
 function ContextMenuSubTrigger({
   className,
   inset,
@@ -121,7 +113,6 @@ function ContextMenuSubTrigger({
     </ContextMenuPrimitive.SubTrigger>
   )
 }
-
 function ContextMenuSubContent({
   className,
   ...props
@@ -129,12 +120,14 @@ function ContextMenuSubContent({
   return (
     <ContextMenuPrimitive.SubContent
       data-slot="context-menu-sub-content"
-      className={cn("z-50 min-w-32 origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className )}
+      className={cn(
+        "z-50 min-w-32 origin-(--radix-context-menu-content-transform-origin) overflow-hidden rounded-lg border bg-popover p-1 text-popover-foreground shadow-lg duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+        className
+      )}
       {...props}
     />
   )
 }
-
 function ContextMenuCheckboxItem({
   className,
   children,
@@ -157,15 +150,13 @@ function ContextMenuCheckboxItem({
     >
       <span className="pointer-events-none absolute right-2">
         <ContextMenuPrimitive.ItemIndicator>
-          <CheckIcon
-          />
+          <CheckIcon />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}
     </ContextMenuPrimitive.CheckboxItem>
   )
 }
-
 function ContextMenuRadioItem({
   className,
   children,
@@ -186,15 +177,13 @@ function ContextMenuRadioItem({
     >
       <span className="pointer-events-none absolute right-2">
         <ContextMenuPrimitive.ItemIndicator>
-          <CheckIcon
-          />
+          <CheckIcon />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}
     </ContextMenuPrimitive.RadioItem>
   )
 }
-
 function ContextMenuLabel({
   className,
   inset,
@@ -214,7 +203,6 @@ function ContextMenuLabel({
     />
   )
 }
-
 function ContextMenuSeparator({
   className,
   ...props
@@ -227,7 +215,6 @@ function ContextMenuSeparator({
     />
   )
 }
-
 function ContextMenuShortcut({
   className,
   ...props
@@ -243,7 +230,6 @@ function ContextMenuShortcut({
     />
   )
 }
-
 export {
   ContextMenu,
   ContextMenuTrigger,

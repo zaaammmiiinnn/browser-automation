@@ -1,5 +1,4 @@
 "use client"
-
 import { useCallback, useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 import {
@@ -17,18 +16,14 @@ import {
 } from "@xyflow/react"
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow"
 import { AvatarStack } from "@liveblocks/react-ui"
-
 import { StepNode } from "@/features/workflows/components/step-node"
 import { useIsLiveblocksEnabled } from "@/features/workflows/components/room"
 import type { StepNodeType } from "@/features/workflows/nodes/node-registry"
 import type { WorkflowGraph } from "@/lib/db/schema"
-
 import "@xyflow/react/dist/style.css"
 import "@liveblocks/react-ui/styles.css"
 import "@liveblocks/react-flow/styles.css"
-
 const nodeTypes: NodeTypes = { step: StepNode }
-
 const defaultNodes: StepNodeType[] = [
   {
     id: "start",
@@ -37,13 +32,8 @@ const defaultNodes: StepNodeType[] = [
     data: { type: "start", kind: "trigger", title: "Start", values: {} },
   },
 ]
-
 const defaultEdges: Edge[] = []
-
-const emptySubscribe = () => () => { }
-
-// False during server render and hydration, true after mount. Keeps the
-// server and initial client render identical to avoid a hydration mismatch.
+const emptySubscribe = () => () => {}
 function useMounted() {
   return useSyncExternalStore(
     emptySubscribe,
@@ -51,7 +41,6 @@ function useMounted() {
     () => false
   )
 }
-
 function LiveblocksCanvas({
   initialNodes,
   initialEdges,
@@ -62,21 +51,14 @@ function LiveblocksCanvas({
   const { resolvedTheme } = useTheme()
   const mounted = useMounted()
   const colorMode: ColorMode = mounted
-    ? (resolvedTheme as ColorMode) ?? "light"
+    ? ((resolvedTheme as ColorMode) ?? "light")
     : "light"
-  const {
-    nodes,
-    edges,
-    onNodesChange,
-    onEdgesChange,
-    onConnect,
-    onDelete,
-  } = useLiveblocksFlow({
-    suspense: true,
-    nodes: { initial: initialNodes },
-    edges: { initial: initialEdges },
-  })
-
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onDelete } =
+    useLiveblocksFlow({
+      suspense: true,
+      nodes: { initial: initialNodes },
+      edges: { initial: initialEdges },
+    })
   return (
     <div className="size-full">
       <ReactFlow
@@ -113,7 +95,6 @@ function LiveblocksCanvas({
     </div>
   )
 }
-
 function LocalCanvas({
   initialNodes,
   initialEdges,
@@ -124,17 +105,14 @@ function LocalCanvas({
   const { resolvedTheme } = useTheme()
   const mounted = useMounted()
   const colorMode: ColorMode = mounted
-    ? (resolvedTheme as ColorMode) ?? "light"
+    ? ((resolvedTheme as ColorMode) ?? "light")
     : "light"
-
   const [nodes, , onNodesChange] = useNodesState<StepNodeType>(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
-
   const onConnect = useCallback(
     (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
     [setEdges]
   )
-
   return (
     <div className="size-full">
       <ReactFlow
@@ -166,16 +144,25 @@ function LocalCanvas({
     </div>
   )
 }
-
-export function Canvas({ initialGraph }: { initialGraph?: WorkflowGraph | null }) {
+export function Canvas({
+  initialGraph,
+}: {
+  initialGraph?: WorkflowGraph | null
+}) {
   const hasLiveblocks = useIsLiveblocksEnabled()
-
-  const initialNodes = initialGraph?.nodes?.length ? initialGraph.nodes : defaultNodes
-  const initialEdges = initialGraph?.edges?.length ? initialGraph.edges : defaultEdges
-
+  const initialNodes = initialGraph?.nodes?.length
+    ? initialGraph.nodes
+    : defaultNodes
+  const initialEdges = initialGraph?.edges?.length
+    ? initialGraph.edges
+    : defaultEdges
   if (hasLiveblocks) {
-    return <LiveblocksCanvas initialNodes={initialNodes} initialEdges={initialEdges} />
+    return (
+      <LiveblocksCanvas
+        initialNodes={initialNodes}
+        initialEdges={initialEdges}
+      />
+    )
   }
-
   return <LocalCanvas initialNodes={initialNodes} initialEdges={initialEdges} />
 }

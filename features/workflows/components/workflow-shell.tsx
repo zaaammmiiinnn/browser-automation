@@ -3,18 +3,18 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-
 import type { WorkflowGraph } from "@/lib/db/schema"
 import { Canvas } from "./canvas"
 import { ConsolePanel } from "./console-panel"
 import { RightSidebar } from "./right-sidebar"
-
 interface WorkflowShellProps {
   workflowId: string
   initialGraph?: WorkflowGraph | null
 }
-
-export function WorkflowShell({ workflowId, initialGraph }: WorkflowShellProps) {
+export function WorkflowShell({
+  workflowId,
+  initialGraph,
+}: WorkflowShellProps) {
   return (
     <ResizablePanelGroup orientation="horizontal" className="size-full">
       <ResizablePanel minSize="30rem">
