@@ -22,14 +22,14 @@ export function WorkflowShell({
           <ResizablePanel minSize="18rem">
             <Canvas initialGraph={initialGraph} />
           </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel defaultSize="8rem" minSize="6rem">
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize="14rem" minSize="6rem">
             <ConsolePanel />
           </ResizablePanel>
         </ResizablePanelGroup>
       </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize="16rem" minSize="14rem" maxSize="36rem">
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize="18rem" minSize="14rem" maxSize="36rem">
         <RightSidebar workflowId={workflowId} />
       </ResizablePanel>
     </ResizablePanelGroup>
