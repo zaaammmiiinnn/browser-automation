@@ -43,26 +43,30 @@ export default async function Page({
   // A read-only token scoped to this workflow's run tag, so the client can
   // subscribe to its runs in realtime. Good for ~an hour of an open canvas.
   let runsToken: string | undefined
-  try {
-    runsToken = await triggerAuth.createPublicToken({
-      scopes: {
-        read: {
-          tags: [`workflow:${id}`],
+  if (process.env.TRIGGER_SECRET_KEY) {
+    try {
+      runsToken = await triggerAuth.createPublicToken({
+        scopes: {
+          read: {
+            tags: [`workflow:${id}`],
+          },
         },
-      },
-      expirationTime: "1hr",
-    })
-  } catch (err) {
-    console.error("Failed to mint Trigger.dev public token:", err)
+        expirationTime: "1hr",
+      })
+    } catch (err) {
+      console.error("Failed to mint Trigger.dev public token:", err)
+    }
   }
+
+  const hasLiveblocks = Boolean(process.env.LIVEBLOCKS_SECRET_KEY)
 
   // The canvas and the sidebar's node palette live in separate components, so a
   // single ReactFlowProvider wraps both to give them one shared React Flow store.
   return (
-    <Room roomId={id}>
+    <Room roomId={id} hasLiveblocks={hasLiveblocks}>
       <ReactFlowProvider>
         <WorkflowRunsProvider workflowId={id} accessToken={runsToken}>
-          <WorkflowShell workflowId={id} />
+          <WorkflowShell workflowId={id} initialGraph={workflow.graph} />
         </WorkflowRunsProvider>
       </ReactFlowProvider>
     </Room>

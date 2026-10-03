@@ -1,6 +1,6 @@
 "use client"
 
-import { useSyncExternalStore } from "react"
+import { useCallback, useSyncExternalStore } from "react"
 import { useTheme } from "next-themes"
 import {
   Controls,
@@ -8,22 +8,28 @@ import {
   ConnectionLineType,
   type ColorMode,
   type Edge,
+  type Connection,
   NodeTypes,
   Panel,
+  useNodesState,
+  useEdgesState,
+  addEdge,
 } from "@xyflow/react"
 import { useLiveblocksFlow, Cursors } from "@liveblocks/react-flow"
-import { AvatarStack } from "@liveblocks/react-ui";
+import { AvatarStack } from "@liveblocks/react-ui"
 
 import { StepNode } from "@/features/workflows/components/step-node"
+import { useIsLiveblocksEnabled } from "@/features/workflows/components/room"
 import type { StepNodeType } from "@/features/workflows/nodes/node-registry"
+import type { WorkflowGraph } from "@/lib/db/schema"
 
 import "@xyflow/react/dist/style.css"
-import "@liveblocks/react-ui/styles.css";
-import "@liveblocks/react-flow/styles.css";
+import "@liveblocks/react-ui/styles.css"
+import "@liveblocks/react-flow/styles.css"
 
 const nodeTypes: NodeTypes = { step: StepNode }
 
-const initialNodes: StepNodeType[] = [
+const defaultNodes: StepNodeType[] = [
   {
     id: "start",
     type: "step",
@@ -32,7 +38,7 @@ const initialNodes: StepNodeType[] = [
   },
 ]
 
-const initialEdges: Edge[] = []
+const defaultEdges: Edge[] = []
 
 const emptySubscribe = () => () => { }
 
@@ -46,7 +52,13 @@ function useMounted() {
   )
 }
 
-export function Canvas() {
+function LiveblocksCanvas({
+  initialNodes,
+  initialEdges,
+}: {
+  initialNodes: StepNodeType[]
+  initialEdges: Edge[]
+}) {
   const { resolvedTheme } = useTheme()
   const mounted = useMounted()
   const colorMode: ColorMode = mounted
@@ -100,4 +112,70 @@ export function Canvas() {
       </ReactFlow>
     </div>
   )
+}
+
+function LocalCanvas({
+  initialNodes,
+  initialEdges,
+}: {
+  initialNodes: StepNodeType[]
+  initialEdges: Edge[]
+}) {
+  const { resolvedTheme } = useTheme()
+  const mounted = useMounted()
+  const colorMode: ColorMode = mounted
+    ? (resolvedTheme as ColorMode) ?? "light"
+    : "light"
+
+  const [nodes, , onNodesChange] = useNodesState<StepNodeType>(initialNodes)
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+
+  const onConnect = useCallback(
+    (connection: Connection) => setEdges((eds) => addEdge(connection, eds)),
+    [setEdges]
+  )
+
+  return (
+    <div className="size-full">
+      <ReactFlow
+        nodeTypes={nodeTypes}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        colorMode={colorMode}
+        fitView
+        connectionLineType={ConnectionLineType.SmoothStep}
+        connectionLineStyle={{ stroke: "var(--border)" }}
+        defaultEdgeOptions={{
+          type: "smoothstep",
+          style: { stroke: "var(--border)" },
+        }}
+        style={
+          {
+            "--xy-background-color": "var(--background)",
+            "--xy-edge-stroke-width": 2,
+            "--xy-connectionline-stroke-width": 2,
+          } as React.CSSProperties
+        }
+        maxZoom={1}
+      >
+        <Controls />
+      </ReactFlow>
+    </div>
+  )
+}
+
+export function Canvas({ initialGraph }: { initialGraph?: WorkflowGraph | null }) {
+  const hasLiveblocks = useIsLiveblocksEnabled()
+
+  const initialNodes = initialGraph?.nodes?.length ? initialGraph.nodes : defaultNodes
+  const initialEdges = initialGraph?.edges?.length ? initialGraph.edges : defaultEdges
+
+  if (hasLiveblocks) {
+    return <LiveblocksCanvas initialNodes={initialNodes} initialEdges={initialEdges} />
+  }
+
+  return <LocalCanvas initialNodes={initialNodes} initialEdges={initialEdges} />
 }
