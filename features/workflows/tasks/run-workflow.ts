@@ -37,10 +37,12 @@ export const runWorkflowTask = task({
     workflowId,
     orgId,
     graph: passedGraph,
+    browserbaseApiKey: passedBrowserbaseApiKey,
   }: {
     workflowId: string
     orgId: string
     graph?: WorkflowGraph
+    browserbaseApiKey?: string
   }) => {
     let graph = passedGraph
     let workflowName = "Workflow"
@@ -106,10 +108,12 @@ export const runWorkflowTask = task({
     const getStagehand = async () => {
       if (stagehand) return stagehand
 
-      if (process.env.BROWSERBASE_API_KEY) {
+      const browserbaseKey = process.env.BROWSERBASE_API_KEY || passedBrowserbaseApiKey
+
+      if (browserbaseKey) {
         stagehand = new Stagehand({
           env: "BROWSERBASE",
-          apiKey: process.env.BROWSERBASE_API_KEY,
+          apiKey: browserbaseKey,
           model: "google/gemini-2.5-flash",
           // Pino's logging backend spawns a thread-stream worker (lib/worker.js)
           // that can't be resolved inside trigger.dev's bundled output. Disable it —
