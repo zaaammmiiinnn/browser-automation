@@ -99,6 +99,12 @@ export async function runWorkflowAction({
     throw error
   }
 
+  if (!process.env.TRIGGER_SECRET_KEY) {
+    throw new Error(
+      "Trigger.dev is not configured. Add TRIGGER_SECRET_KEY to .env.local to execute workflows."
+    )
+  }
+
   const handle = await tasks.trigger<typeof runWorkflowTask>(
     "run-workflow",
     { workflowId: id, orgId },

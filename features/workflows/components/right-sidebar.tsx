@@ -341,7 +341,13 @@ function ActionsMenu({ workflowId }: { workflowId: string }) {
             // the action's redirect home on success.
             e.preventDefault()
             startTransition(async () => {
-              await deleteWorkflowAction(workflowId)
+              try {
+                await deleteWorkflowAction(workflowId)
+              } catch (error) {
+                const message =
+                  error instanceof Error ? error.message : "Couldn't delete workflow."
+                toast.error(message)
+              }
             })
           }}
         >
@@ -399,7 +405,13 @@ function RunButton({ workflowId }: { workflowId: string }) {
         }
 
         startTransition(async () => {
-          await runWorkflowAction({ id: workflowId, graph })
+          try {
+            await runWorkflowAction({ id: workflowId, graph })
+          } catch (error) {
+            const message =
+              error instanceof Error ? error.message : "Couldn't start the run."
+            toast.error(message)
+          }
         })
       }}
     >
