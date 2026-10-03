@@ -84,7 +84,10 @@ export function useLatestRunSteps(): LatestRunSteps {
 
   return useMemo<LatestRunSteps>(() => {
     const latest = runs.reduce<WorkflowRun | undefined>((newest, run) => {
-      if (!newest || run.createdAt > newest.createdAt) return run
+      if (!newest) return run
+      const runTime = new Date(run.createdAt).getTime()
+      const newestTime = new Date(newest.createdAt).getTime()
+      if (runTime > newestTime) return run
       return newest
     }, undefined)
 
@@ -130,11 +133,11 @@ export function useConsoleRuns(): ConsoleRun[] {
   return useMemo<ConsoleRun[]>(
     () =>
       [...runs]
-        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
         .map((run) => ({
           id: run.id,
           status: run.status,
-          createdAt: run.createdAt,
+          createdAt: new Date(run.createdAt),
           isLive: isRunLive(run),
           steps: stepsForRun(run),
           browserbaseSessionId: sessionIdForRun(run),

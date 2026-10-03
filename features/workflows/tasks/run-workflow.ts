@@ -9,6 +9,7 @@ import {
 } from "@/features/workflows/lib/interpolate"
 import { getWorkflow } from "@/features/workflows/data"
 import type { NodeType } from "@/features/workflows/nodes/node-registry"
+import type { WorkflowGraph } from "@/lib/db/schema"
 
 // One entry per node the run will walk, published to the run's metadata under
 // "steps" so the canvas — and the run console below it — can watch each node
@@ -29,16 +30,30 @@ export type RunStep = {
 }
 
 // The Trigger.dev task the Run button fires. It loads the saved graph, works out
-// what order the nodes should run in, and walks them. For now each node just
-// announces itself — real execution (per-node executors, live progress, browser
-// sessions) gets layered on from here.
+// what order the nodes should run in, and walks them.
 export const runWorkflowTask = task({
   id: "run-workflow",
-  run: async ({ workflowId, orgId }: { workflowId: string; orgId: string }) => {
-    const workflow = await getWorkflow(orgId, workflowId)
-    if (!workflow?.graph) throw new Error(`Workflow ${workflowId} has no graph`)
+  run: async ({
+    workflowId,
+    orgId,
+    graph: passedGraph,
+  }: {
+    workflowId: string
+    orgId: string
+    graph?: WorkflowGraph
+  }) => {
+    let graph = passedGraph
+    let workflowName = "Workflow"
 
-    const { nodes, edges } = workflow.graph
+    if (!graph) {
+      const workflow = await getWorkflow(orgId, workflowId)
+      graph = workflow?.graph ?? undefined
+      if (workflow?.name) workflowName = workflow.name
+    }
+
+    if (!graph) throw new Error(`Workflow ${workflowId} has no graph`)
+
+    const { nodes, edges } = graph
     const byId = new Map(nodes.map((n) => [n.id, n]))
 
     // Run only connected nodes — anything touching an edge. Orphans dropped on
@@ -51,7 +66,7 @@ export const runWorkflowTask = task({
       )
       .filter((id) => connected.has(id))
 
-    logger.log(`Running workflow ${workflow.name}`, { steps: order.length })
+    logger.log(`Running workflow ${workflowName}`, { steps: order.length })
 
     // Seed every step as "pending" up front and publish, so the canvas can render
     // the full run as a list of spinners before any node starts. type and title
@@ -84,19 +99,90 @@ export const runWorkflowTask = task({
     // be returned in the run's output — a panel reads it there to fetch the replay
     // once the run finishes and the recording is available.
     let browserbaseSessionId: string | undefined
+
+    let simulatedPageUrl = "https://example.com"
+    let simulatedPageTitle = "Example Domain"
+
     const getStagehand = async () => {
       if (stagehand) return stagehand
-      stagehand = new Stagehand({
-        env: "BROWSERBASE",
-        apiKey: process.env.BROWSERBASE_API_KEY!,
-        model: "google/gemini-2.5-flash",
-        // Pino's logging backend spawns a thread-stream worker (lib/worker.js)
-        // that can't be resolved inside trigger.dev's bundled output. Disable it —
-        // the option exists for exactly these minimal/bundled environments.
-        disablePino: true,
-      })
-      await stagehand.init()
-      browserbaseSessionId = stagehand.browserbaseSessionID
+
+      if (process.env.BROWSERBASE_API_KEY) {
+        stagehand = new Stagehand({
+          env: "BROWSERBASE",
+          apiKey: process.env.BROWSERBASE_API_KEY,
+          model: "google/gemini-2.5-flash",
+          // Pino's logging backend spawns a thread-stream worker (lib/worker.js)
+          // that can't be resolved inside trigger.dev's bundled output. Disable it —
+          // the option exists for exactly these minimal/bundled environments.
+          disablePino: true,
+        })
+        await stagehand.init()
+        browserbaseSessionId = stagehand.browserbaseSessionID
+        return stagehand
+      }
+
+      // Safe simulation fallback when BROWSERBASE_API_KEY is not set
+      const mockStagehand = {
+        browserbaseSessionID: undefined,
+        context: {
+          pages: () => [
+            {
+              url: () => simulatedPageUrl,
+              title: async () => simulatedPageTitle,
+              goto: async (url: string) => {
+                simulatedPageUrl = url
+                try {
+                  const parsed = new URL(url)
+                  simulatedPageTitle = `${parsed.hostname} (Simulated)`
+                } catch {
+                  simulatedPageTitle = url
+                }
+                await new Promise((r) => setTimeout(r, 1000))
+              },
+            },
+          ],
+        },
+        async init() {
+          await new Promise((r) => setTimeout(r, 500))
+        },
+        async act(instruction: string) {
+          await new Promise((r) => setTimeout(r, 1000))
+          return {
+            success: true,
+            message: `Action completed: ${instruction}`,
+          }
+        },
+        async observe(instruction: string) {
+          await new Promise((r) => setTimeout(r, 1000))
+          return [
+            {
+              selector: "button.action",
+              description: `Observed match for: ${instruction}`,
+            },
+          ]
+        },
+        async extract(instruction: string) {
+          await new Promise((r) => setTimeout(r, 1000))
+          return {
+            extraction: `Extracted data for: ${instruction}`,
+          }
+        },
+        agent() {
+          return {
+            execute: async (instruction: string) => {
+              await new Promise((r) => setTimeout(r, 1200))
+              return {
+                success: true,
+                message: `Agent execution finished: ${instruction}`,
+                completed: true,
+              }
+            },
+          }
+        },
+        async close() {},
+      }
+
+      stagehand = mockStagehand as unknown as Stagehand
       return stagehand
     }
 

@@ -407,6 +407,7 @@ function RunButton({ workflowId }: { workflowId: string }) {
         startTransition(async () => {
           try {
             await runWorkflowAction({ id: workflowId, graph })
+            toast.success("Workflow run started")
           } catch (error) {
             const message =
               error instanceof Error ? error.message : "Couldn't start the run."
@@ -416,7 +417,7 @@ function RunButton({ workflowId }: { workflowId: string }) {
       }}
     >
       <Play fill="primary" />
-      Run
+      {isPending ? "Starting..." : "Run"}
     </Button>
   )
 }
