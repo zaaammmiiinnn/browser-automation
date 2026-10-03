@@ -23,16 +23,22 @@ export default async function Page({
 
   // Rooms are private by default under ID-token auth. Grant write access to the
   // owning org, matching the `groupIds: [orgId]` issued by the auth endpoint.
-  await liveblocks.getOrCreateRoom(id, {
-    organizationId: orgId,
-    defaultAccesses: [],
-    groupsAccesses: {
-      [orgId]: ["room:write"],
-    },
-    metadata: {
-      title: workflow.name,
-    },
-  })
+  if (process.env.LIVEBLOCKS_SECRET_KEY) {
+    try {
+      await liveblocks.getOrCreateRoom(id, {
+        organizationId: orgId,
+        defaultAccesses: [],
+        groupsAccesses: {
+          [orgId]: ["room:write"],
+        },
+        metadata: {
+          title: workflow.name,
+        },
+      })
+    } catch (err) {
+      console.error("Failed to get or create Liveblocks room:", err)
+    }
+  }
 
   // A read-only token scoped to this workflow's run tag, so the client can
   // subscribe to its runs in realtime. Good for ~an hour of an open canvas.

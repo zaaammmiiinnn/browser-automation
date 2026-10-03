@@ -22,35 +22,56 @@ export async function POST() {
     orgId,
   })
 
-  // Identify the user with an ID token. Permissions are resolved per-room
-  // from the user's groups — scope access to their Clerk organization.
-  const { status, body } = await liveblocks.identifyUser(
-    {
-      userId,
-      groupIds: [orgId],
-      organizationId: orgId,
-    },
-    {
-      userInfo: {
-        name:
-          user.fullName ??
-          user.username ??
-          user.primaryEmailAddress?.emailAddress ??
-          "Anonymous",
-        avatar: user.imageUrl,
-      },
-    },
-  )
-
-  if (status >= 400) {
-    Sentry.logger.error("Liveblocks user identification failed", {
-      userId,
-      orgId,
-      status,
-    })
-  } else {
-    Sentry.logger.info("Liveblocks user identified", { userId, orgId, status })
+  if (!process.env.LIVEBLOCKS_SECRET_KEY) {
+    return new Response(
+      JSON.stringify({ error: "LIVEBLOCKS_SECRET_KEY is not set" }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      }
+    )
   }
 
-  return new Response(body, { status })
+  try {
+    // Identify the user with an ID token. Permissions are resolved per-room
+    // from the user's groups — scope access to their Clerk organization.
+    const { status, body } = await liveblocks.identifyUser(
+      {
+        userId,
+        groupIds: [orgId],
+        organizationId: orgId,
+      },
+      {
+        userInfo: {
+          name:
+            user.fullName ??
+            user.username ??
+            user.primaryEmailAddress?.emailAddress ??
+            "Anonymous",
+          avatar: user.imageUrl,
+        },
+      }
+    )
+
+    if (status >= 400) {
+      Sentry.logger.error("Liveblocks user identification failed", {
+        userId,
+        orgId,
+        status,
+      })
+    } else {
+      Sentry.logger.info("Liveblocks user identified", { userId, orgId, status })
+    }
+
+    return new Response(body, { status })
+  } catch (error) {
+    Sentry.logger.error("Liveblocks auth failed", { error, userId, orgId })
+    return new Response(
+      JSON.stringify({ error: "Failed to authenticate with Liveblocks" }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    )
+  }
 }

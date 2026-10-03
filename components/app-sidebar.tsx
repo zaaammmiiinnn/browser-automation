@@ -18,11 +18,11 @@ export async function AppSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const { orgId } = await auth()
   let workflows: Awaited<ReturnType<typeof listWorkflows>> = []
-  if (orgId && process.env.DATABASE_URL) {
+  if (orgId) {
     try {
       workflows = await listWorkflows(orgId)
     } catch (error) {
-      console.error("Failed to fetch workflows from database:", error)
+      console.error("Failed to fetch workflows:", error)
     }
   }
 
