@@ -122,7 +122,7 @@
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/ramanrishit448-RR/browser-automation-app.git
+git clone https://github.com/zaaammmiiinnn/browser-automation.git
 cd browser-automation-app
 npm install
 ```
